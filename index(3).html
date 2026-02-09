@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hello World</title>
+</head>
+<body>
+  <h1>Hello World</h1>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>星损自抽号游戏点单平台</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+		}
+		
+		body {
+			background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+			color: #e0e0e0;
+			line-height: 1.6;
+			min-height: 100vh;
+		}
+		
+		.container {
+			max-width: 1400px;
+			margin: 0 auto;
+			padding: 0 20px;
+		}
+		
+		/* 头部样式 */
+		header {
+			background: rgba(15, 12, 41, 0.95);
+			padding: 20px 0;
+			border-bottom: 3px solid #ff3366;
+			position: sticky;
+			top: 0;
+			z-index: 100;
+			backdrop-filter: blur(10px);
+		}
+		
+		.header-content {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+		
+		.logo {
+			display: flex;
+			align-items: center;
+			gap: 15px;
+		}
+		
+		.logo-icon {
+			color: #ff3366;
+			font-size: 32px;
+		}
+		
+		.logo h1 {
+			font-size: 28px;
+			background: linear-gradient(90deg, #ff3366, #ff758c);
+			-webkit-background-clip: text;
+			background-clip: text;
+			color: transparent;
+			font-weight: 700;
+			text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+		}
+		
+		.header-tag {
+			background: linear-gradient(90deg, #4A00E0, #8E2DE2);
+			color: white;
+			padding: 8px 16px;
+			border-radius: 20px;
+			font-size: 14px;
+			font-weight: 600;
+		}
+		
+		/* 公告栏 */
+		.notice-board {
+			background: linear-gradient(90deg, rgba(255, 51, 102, 0.15), rgba(142, 45, 226, 0.15));
+			border-radius: 10px;
+			padding: 15px 20px;
+			margin: 25px 0;
+			border-left: 4px solid #ff3366;
+			display: flex;
+			align-items: center;
+			gap: 15px;
+		}
+		
+		.notice-icon {
+			color: #ff3366;
+			font-size: 22px;
+		}
+		
+		/* 商品筛选 */
+		.filter-section {
+			background: rgba(255, 255, 255, 0.07);
+			border-radius: 15px;
+			padding: 20px;
+			margin: 25px 0;
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+		}
+		
+		.filter-section h3 {
+			margin-bottom: 15px;
+			color: #ff758c;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+		
+		.filter-options {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 15px;
+		}
+		
+		.filter-btn {
+			background: rgba(255, 255, 255, 0.1);
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			color: #e0e0e0;
+			padding: 10px 20px;
+			border-radius: 25px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			font-weight: 500;
+		}
+		
+		.filter-btn:hover, .filter-btn.active {
+			background: linear-gradient(90deg, #ff3366, #ff758c);
+			color: white;
+			border-color: #ff3366;
+			transform: translateY(-2px);
+			box-shadow: 0 5px 15px rgba(255, 51, 102, 0.3);
+		}
+		
+		.price-range {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin-top: 15px;
+			flex-wrap: wrap;
+		}
+		
+		.price-range input {
+			background: rgba(255, 255, 255, 0.1);
+			border: 1px solid rgba(255, 255, 255, 0.3);
+			color: white;
+			padding: 8px 15px;
+			border-radius: 20px;
+			width: 100px;
+		}
+		
+		/* 商品卡片网格 */
+		.products-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+			gap: 30px;
+			margin-top: 30px;
+		}
+		
+		.product-card {
+			background: rgba(20, 18, 54, 0.9);
+			border-radius: 20px;
+			overflow: hidden;
+			box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+			transition: all 0.4s ease;
+			border: 2px solid rgba(255, 255, 255, 0.05);
+			position: relative;
+		}
+		
+		.product-card:hover {
+			transform: translateY(-10px) scale(1.02);
+			box-shadow: 0 20px 40px rgba(255, 51, 102, 0.25);
+			border-color: rgba(255, 51, 102, 0.4);
+		}
+		
+		.product-card.highlight {
+			border: 2px solid #ff3366;
+			box-shadow: 0 0 25px rgba(255, 51, 102, 0.5);
+			animation: pulse 2s infinite;
+		}
+		
+		@keyframes pulse {
+			0% { box-shadow: 0 0 25px rgba(255, 51, 102, 0.5); }
+			50% { box-shadow: 0 0 35px rgba(255, 51, 102, 0.8); }
+			100% { box-shadow: 0 0 25px rgba(255, 51, 102, 0.5); }
+		}
+		
+		.card-header {
+			background: linear-gradient(90deg, #1a1638, #2a2468);
+			padding: 20px;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+			position: relative;
+		}
+		
+		.card-header h3 {
+			font-size: 22px;
+			color: #ff758c;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+		
+		.product-id {
+			background: linear-gradient(90deg, #ff3366, #ff758c);
+			color: white;
+			padding: 5px 15px;
+			border-radius: 20px;
+			font-size: 16px;
+			font-weight: 700;
+		}
+		
+		.card-body {
+			padding: 25px 20px;
+		}
+		
+		.product-features {
+			list-style: none;
+			margin-bottom: 20px;
+		}
+		
+		.product-features li {
+			padding: 10px 0;
+			border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+			display: flex;
+			align-items: center;
+		}
+		
+		.product-features li:last-child {
+			border-bottom: none;
+		}
+		
+		.feature-icon {
+			color: #ff3366;
+			margin-right: 12px;
+			font-size: 16px;
+			width: 24px;
+			text-align: center;
+		}
+		
+		.product-description {
+			color: #b0b0c0;
+			font-size: 15px;
+			margin-top: 15px;
+			padding-top: 15px;
+			border-top: 1px solid rgba(255, 255, 255, 0.1);
+			line-height: 1.5;
+		}
+		
+		.card-footer {
+			padding: 0 20px 25px;
+		}
+		
+		.price {
+			font-size: 32px;
+			color: #ffdd59;
+			font-weight: 800;
+			margin-bottom: 20px;
+			text-align: center;
+			text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+		}
+		
+		.buy-btn {
+			width: 100%;
+			background: linear-gradient(90deg, #ff3366, #ff758c);
+			color: white;
+			border: none;
+			padding: 16px;
+			border-radius: 12px;
+			font-size: 18px;
+			font-weight: 700;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 10px;
+			letter-spacing: 1px;
+		}
+		
+		.buy-btn:hover {
+			background: linear-gradient(90deg, #ff1a53, #ff5c7c);
+			box-shadow: 0 8px 20px rgba(255, 51, 102, 0.5);
+			transform: translateY(-3px);
+		}
+		
+		.in-cart {
+			background: linear-gradient(90deg, #0be881, #05c46b);
+		}
+		
+		.in-cart:hover {
+			background: linear-gradient(90deg, #0be881, #0be881);
+			box-shadow: 0 8px 20px rgba(11, 232, 129, 0.5);
+		}
+		
+		/* 购物车侧边栏 */
+		.cart-sidebar {
+			position: fixed;
+			top: 0;
+			right: -450px;
+			width: 420px;
+			height: 100vh;
+			background: rgba(15, 12, 41, 0.98);
+			box-shadow: -5px 0 25px rgba(0, 0, 0, 0.6);
+			padding: 25px;
+			transition: right 0.4s ease;
+			z-index: 1000;
+			overflow-y: auto;
+			backdrop-filter: blur(10px);
+			border-left: 3px solid #ff3366;
+		}
+		
+		.cart-sidebar.active {
+			right: 0;
+		}
+		
+		.cart-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 25px;
+			padding-bottom: 15px;
+			border-bottom: 2px solid #ff3366;
+		}
+		
+		.cart-header h2 {
+			color: #ff758c;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			font-size: 24px;
+		}
+		
+		.close-cart {
+			background: none;
+			border: none;
+			color: #e0e0e0;
+			font-size: 28px;
+			cursor: pointer;
+			transition: color 0.3s;
+		}
+		
+		.close-cart:hover {
+			color: #ff3366;
+		}
+		
+		.cart-items {
+			max-height: 50vh;
+			overflow-y: auto;
+			margin-bottom: 20px;
+		}
+		
+		.cart-item {
+			background: rgba(255, 255, 255, 0.07);
+			border-radius: 12px;
+			padding: 18px;
+			margin-bottom: 15px;
+			border-left: 4px solid #ff3366;
+			transition: all 0.3s ease;
+		}
+		
+		.cart-item:hover {
+			background: rgba(255, 255, 255, 0.1);
+		}
+		
+		.cart-item-header {
+			display: flex;
+			justify-content: space-between;
+			margin-bottom: 10px;
+		}
+		
+		.cart-item-title {
+			font-weight: 700;
+			color: #ff758c;
+			font-size: 18px;
+		}
+		
+		.remove-item {
+			color: #ff3366;
+			background: none;
+			border: none;
+			cursor: pointer;
+			font-size: 20px;
+			transition: transform 0.3s;
+		}
+		
+		.remove-item:hover {
+			transform: scale(1.2);
+		}
+		
+		.cart-total {
+			margin-top: 25px;
+			padding-top: 20px;
+			border-top: 2px solid rgba(255, 255, 255, 0.1);
+			font-size: 28px;
+			display: flex;
+			justify-content: space-between;
+			color: #ffdd59;
+			font-weight: 800;
+		}
+		
+		.checkout-btn {
+			width: 100%;
+			background: linear-gradient(90deg, #4A00E0, #8E2DE2);
+			color: white;
+			border: none;
+			padding: 18px;
+			border-radius: 12px;
+			font-size: 20px;
+			font-weight: 700;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			margin-top: 25px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 10px;
+			letter-spacing: 1px;
+		}
+		
+		.checkout-btn:hover {
+			background: linear-gradient(90deg, #4A00E0, #4A00E0);
+			box-shadow: 0 8px 20px rgba(74, 0, 224, 0.5);
+			transform: translateY(-3px);
+		}
+		
+		.empty-cart {
+			text-align: center;
+			padding: 40px 0;
+			color: #888;
+		}
+		
+		.empty-cart i {
+			font-size: 60px;
+			margin-bottom: 15px;
+			opacity: 0.5;
+		}
+		
+		/* 买家信息表单 */
+		.buyer-form {
+			background: rgba(255, 255, 255, 0.05);
+			border-radius: 15px;
+			padding: 25px;
+			margin-top: 25px;
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			display: none;
+		}
+		
+		.buyer-form h3 {
+			color: #ff758c;
+			margin-bottom: 20px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+		
+		.form-group {
+			margin-bottom: 20px;
+		}
+		
+		.form-group label {
+			display: block;
+			margin-bottom: 8px;
+			color: #b0b0c0;
+			font-weight: 500;
+		}
+		
+		.form-group input, .form-group textarea {
+			width: 100%;
+			background: rgba(255, 255, 255, 0.1);
+			border: 1px solid rgba(255, 255, 255, 0.3);
+			color: white;
+			padding: 12px 15px;
+			border-radius: 10px;
+			font-size: 16px;
+			transition: all 0.3s;
+		}
+		
+		.form-group input:focus, .form-group textarea:focus {
+			outline: none;
+			border-color: #ff3366;
+			box-shadow: 0 0 10px rgba(255, 51, 102, 0.3);
+		}
+		
+		.form-row {
+			display: flex;
+			gap: 15px;
+		}
+		
+		.form-row .form-group {
+			flex: 1;
+		}
+		
+		/* 联系客服区域 */
+		.contact-section {
+			margin-top: 60px;
+			text-align: center;
+			background: rgba(255, 255, 255, 0.03);
+			padding: 40px;
+			border-radius: 20px;
+			border: 1px solid rgba(255, 51, 102, 0.2);
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+		}
+		
+		.contact-section h2 {
+			color: #ff758c;
+			margin-bottom: 20px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 15px;
+			font-size: 28px;
+		}
+		
+		.auto-delivery {
+			background: linear-gradient(90deg, rgba(11, 232, 129, 0.15), rgba(5, 196, 107, 0.15));
+			border-radius: 10px;
+			padding: 15px;
+			margin: 20px 0;
+			display: inline-block;
+			border: 1px solid rgba(11, 232, 129, 0.3);
+		}
+		
+		.contact-btn {
+			display: inline-block;
+			background: linear-gradient(90deg, #4A00E0, #8E2DE2);
+			color: white;
+			text-decoration: none;
+			padding: 16px 35px;
+			border-radius: 30px;
+			font-weight: 700;
+			margin-top: 20px;
+			transition: all 0.3s ease;
+			font-size: 18px;
+		}
+		
+		.contact-btn:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 15px 25px rgba(74, 0, 224, 0.4);
+		}
+		
+		/* 购物车图标 */
+		.cart-icon {
+			position: fixed;
+			bottom: 40px;
+			right: 40px;
+			background: linear-gradient(90deg, #ff3366, #ff758c);
+			color: white;
+			width: 70px;
+			height: 70px;
+			border-radius: 50%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 28px;
+			cursor: pointer;
+			box-shadow: 0 8px 25px rgba(255, 51, 102, 0.5);
+			z-index: 99;
+			transition: all 0.3s ease;
+		}
+		
+		.cart-icon:hover {
+			transform: scale(1.15) rotate(10deg);
+		}
+		
+		.cart-count {
+			position: absolute;
+			top: -8px;
+			right: -8px;
+			background: #0be881;
+			color: #0f0c29;
+			font-size: 16px;
+			font-weight: 800;
+			width: 28px;
+			height: 28px;
+			border-radius: 50%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+		}
+		
+		/* 响应式设计 */
+		@media (max-width: 1200px) {
+			.products-grid {
+				grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+			}
+		}
+		
+		@media (max-width: 768px) {
+			.header-content {
+				flex-direction: column;
+				gap: 15px;
+				text-align: center;
+			}
+			
+			.products-grid {
+				grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+				gap: 20px;
+			}
+			
+			.cart-sidebar {
+				width: 100%;
+				right: -100%;
+			}
+			
+			.filter-options {
+				justify-content: center;
+			}
+			
+			.form-row {
+				flex-direction: column;
+				gap: 0;
+			}
+			
+			.cart-icon {
+				bottom: 20px;
+				right: 20px;
+				width: 60px;
+				height: 60px;
+				font-size: 24px;
+			}
+		}
+		
+		@media (max-width: 480px) {
+			.products-grid {
+				grid-template-columns: 1fr;
+			}
+			
+			.container {
+				padding: 0 15px;
+			}
+			
+			.price {
+				font-size: 28px;
+			}
+		}
+		
+		/* 动画 */
+		@keyframes fadeIn {
+			from { opacity: 0; transform: translateY(20px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+		
+		.product-card {
+			animation: fadeIn 0.5s ease forwards;
+		}
+		
+		/* 订单确认模态框 */
+		.order-modal {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.85);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			z-index: 2000;
+			opacity: 0;
+			visibility: hidden;
+			transition: all 0.3s ease;
+		}
+		
+		.order-modal.active {
+			opacity: 1;
+			visibility: visible;
+		}
+		
+		.modal-content {
+			background: linear-gradient(135deg, #1a1638, #2a2468);
+			width: 90%;
+			max-width: 700px;
+			border-radius: 20px;
+			padding: 30px;
+			box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+			border: 2px solid #ff3366;
+			max-height: 90vh;
+			overflow-y: auto;
+		}
+		
+		.modal-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 25px;
+			padding-bottom: 15px;
+			border-bottom: 2px solid #ff3366;
+		}
+		
+		.modal-header h2 {
+			color: #ff758c;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+		
+		.close-modal {
+			background: none;
+			border: none;
+			color: #e0e0e0;
+			font-size: 28px;
+			cursor: pointer;
+			transition: color 0.3s;
+		}
+		
+		.close-modal:hover {
+			color: #ff3366;
+		}
+		
+		.order-summary {
+			background: rgba(255, 255, 255, 0.05);
+			border-radius: 15px;
+			padding: 20px;
+			margin-bottom: 25px;
+		}
+		
+		.order-item {
+			display: flex;
+			justify-content: space-between;
+			padding: 10px 0;
+			border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+		}
+		
+		.order-item:last-child {
+			border-bottom: none;
+		}
+		
+		.order-total {
+			font-size: 24px;
+			color: #ffdd59;
+			font-weight: 800;
+			display: flex;
+			justify-content: space-between;
+			margin-top: 15px;
+			padding-top: 15px;
+			border-top: 2px solid rgba(255, 255, 255, 0.1);
+		}
+		
+		.order-actions {
+			display: flex;
+			gap: 15px;
+			margin-top: 25px;
+		}
+		
+		.order-actions button {
+			flex: 1;
+			padding: 15px;
+			border-radius: 10px;
+			border: none;
+			font-weight: 700;
+			font-size: 18px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 10px;
+		}
+		
+		.copy-order {
+			background: linear-gradient(90deg, #4A00E0, #8E2DE2);
+			color: white;
+		}
+		
+		.copy-order:hover {
+			background: linear-gradient(90deg, #4A00E0, #4A00E0);
+			transform: translateY(-3px);
+		}
+		
+		.close-order {
+			background: rgba(255, 255, 255, 0.1);
+			color: white;
+		}
+		
+		.close-order:hover {
+			background: rgba(255, 255, 255, 0.2);
+			transform: translateY(-3px);
+		}
+	</style>
+</head>
+<body>
+	<!-- 头部 -->
+	<header>
+		<div class="container">
+			<div class="header-content">
+				<div class="logo">
+					<div class="logo-icon">
+						<i class="fas fa-gamepad"></i>
+					</div>
+					<h1>星损自抽号点单平台</h1>
+				</div>
+				<div class="header-tag">
+					<i class="fas fa-shipping-fast"></i> 24小时自动发货
+				</div>
+			</div>
+		</div>
+	</header>
+	
+	<div class="container">
+		<!-- 公告 -->
+		<div class="notice-board">
+			<div class="notice-icon">
+				<i class="fas fa-info-circle"></i>
+			</div>
+			<div>
+				<p><strong>重要提示：</strong> 所有自抽号剧情均为第一章普通3-1，筛选未动，邀请码未填写。钻石和绿票数量为初始资源，具体以实际账号为准。</p>
+			</div>
+		</div>
+		
+		<!-- 筛选区域 -->
+		<div class="filter-section">
+			<h3><i class="fas fa-filter"></i> 商品筛选</h3>
+			<div class="filter-options">
+				<button class="filter-btn active" data-filter="all">全部商品</button>
+				<button class="filter-btn" data-filter="single">单角色组合</button>
+				<button class="filter-btn" data-filter="multiple">多角色组合</button>
+				<button class="filter-btn" data-filter="random">随机五星组合</button>
+				<button class="filter-btn" data-filter="under10">10元以下</button>
+				<button class="filter-btn" data-filter="10-20">10-20元</button>
+				<button class="filter-btn" data-filter="over20">20元以上</button>
+			</div>
+			<div class="price-range">
+				<span>价格区间：</span>
+				<input type="number" id="minPrice" placeholder="最低价" min="0">
+				<span> - </span>
+				<input type="number" id="maxPrice" placeholder="最高价" min="0">
+				<button class="filter-btn" id="priceFilterBtn">筛选</button>
+				<button class="filter-btn" id="resetFilterBtn">重置</button>
+			</div>
+		</div>
+		
+		<!-- 商品卡片网格 -->
+		<div class="products-grid" id="productsContainer">
+			<!-- 商品卡片将通过JavaScript动态生成 -->
+		</div>
+		
+		<!-- 联系客服区域 -->
+		<div class="contact-section">
+			<h2><i class="fas fa-headset"></i> 更多组合自选网请联系客服</h2>
+			<div class="auto-delivery">
+				<i class="fas fa-clock"></i> 24小时自动发货
+			</div>
+			<p>如果您需要特定的角色组合或者有特殊要求，请联系我们的客服进行定制</p>
+			<a href="#" class="contact-btn">
+				<i class="fab fa-qq"></i> 客服: 1711952552
+				 
+				<i class="fab fa-wxqq"></i> 店长：xing1234yui	
+			</a>
+			<p style="margin-top: 20px; color: #aaa; font-size: 14px;">客服在线时间：全天24小时 | 自动发货随时处理</p>
+		</div>
+	</div>
+	
+	<!-- 购物车侧边栏 -->
+	<div class="cart-sidebar" id="cartSidebar">
+		<div class="cart-header">
+			<h2><i class="fas fa-shopping-cart"></i> 我的购物车</h2>
+			<button class="close-cart" id="closeCart">
+				<i class="fas fa-times"></i>
+			</button>
+		</div>
+		<div class="cart-items" id="cartItems">
+			<!-- 购物车商品将动态生成 -->
+			<div class="empty-cart" id="emptyCart">
+				<i class="fas fa-shopping-cart"></i>
+				<p>购物车为空</p>
+				<p>请添加商品到购物车</p>
+			</div>
+		</div>
+		
+		<!-- 买家信息表单 -->
+		<div class="buyer-form" id="buyerForm">
+			<h3><i class="fas fa-user-circle"></i> 填写买家信息</h3>
+			<div class="form-group">
+				<label for="buyerName"><i class="fas fa-user"></i> 收货人姓名</label>
+				<input type="text" id="buyerName" placeholder="请输入您的姓名">
+			</div>
+			<div class="form-row">
+				<div class="form-group">
+					<label for="buyerQQ"><i class="fab fa-qq"></i> QQ号码</label>
+					<input type="text" id="buyerQQ" placeholder="用于接收账号信息">
+				</div>
+				<div class="form-group">
+					<label for="buyerPhone"><i class="fas fa-phone"></i> 手机号码</label>
+					<input type="text" id="buyerPhone" placeholder="用于紧急联系">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="buyerNote"><i class="fas fa-sticky-note"></i> 备注信息 (可选)</label>
+				<textarea id="buyerNote" rows="3" placeholder="如有特殊要求请在此注明"></textarea>
+			</div>
+		</div>
+		
+		<div class="cart-total">
+			<span>总计:</span>
+			<span id="cartTotal">0</span> <span style="font-size: 18px;">元</span>
+		</div>
+		<button class="checkout-btn" id="checkoutBtn">
+			<i class="fas fa-credit-card"></i> 提交订单
+		</button>
+	</div>
+	
+	<!-- 订单确认模态框 -->
+	<div class="order-modal" id="orderModal">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2><i class="fas fa-receipt"></i> 订单确认</h2>
+				<button class="close-modal" id="closeModal">
+					<i class="fas fa-times"></i>
+				</button>
+			</div>
+			<div class="order-summary" id="orderSummary">
+				<!-- 订单摘要将动态生成 -->
+			</div>
+			<div class="order-total">
+				<span>订单总价：</span>
+				<span id="modalTotal">0</span> 元
+			</div>
+			<div class="order-actions">
+				<button class="copy-order" id="copyOrderBtn">
+					<i class="fas fa-copy"></i> 复制订单信息
+				</button>
+				<button class="close-order" id="closeModalBtn">
+					<i class="fas fa-times"></i> 关闭
+				</button>
+			</div>
+		</div>
+	</div>
+	
+	<!-- 购物车图标 -->
+	<div class="cart-icon" id="cartIcon">
+		<i class="fas fa-shopping-cart"></i>
+		<div class="cart-count" id="cartCount">0</div>
+	</div>
+	
+	<script>
+		// 商品数据
+		const products = [
+			{ id: "1", name: "水狙击爱莉卡", type: "single", description: "水狙击爱莉卡+2000钻+1000绿票", price: 10, features: ["水狙击爱莉卡", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "2", name: "火偶像诺可林", type: "random", description: "火偶像诺可林+随机五星+800绿票", price: 8, features: ["火偶像诺可林", "随机五星", "800绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "36", name: "光宝马+水狙击", type: "multiple", description: "光宝马+水狙击+800绿票", price: 23, features: ["光宝马", "水狙击", "800绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "3", name: "木飞普利蔓", type: "random", description: "木飞普利蔓+随机五星+800绿票", price: 4, features: ["木飞普利蔓", "随机五星", "800绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "37", name: "光宝马+水狙击+木萝莉", type: "multiple", description: "光宝马+水狙击+木萝莉+1000绿票", price: 34.5, features: ["光宝马", "水狙击", "木萝莉", "1000绿票", "剧情3-1", "邀请码未填写"] },
+			{ id: "4", name: "暗法璐茜玛", type: "single", description: "暗法璐茜玛+2000钻+1000绿票", price: 13.6, features: ["暗法璐茜玛", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "38", name: "水狙击+木飞+偶像", type: "multiple", description: "水狙击+木飞+偶像+800绿票", price: 57, features: ["水狙击", "木飞", "偶像", "800绿票", "剧情3-1", "邀请码未填写"] },
+			{ id: "5", name: "暗帝异变的埃帕帝", type: "single", description: "暗帝异变的埃帕帝+2000钻+1000绿票", price: 12, features: ["暗帝异变的埃帕帝", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "6", name: "光镰刀克莱儿", type: "single", description: "光镰刀克莱儿+2000钻+1000绿票", price: 12.5, features: ["光镰刀克莱儿", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "40", name: "吸血鬼医生A01", type: "single", description: "吸血鬼医生A01+2000钻+1000绿票", price: 12, features: ["吸血鬼医生A01", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "7", name: "暗战异变的奥普怀妮", type: "single", description: "暗战异变的奥普怀妮+2000钻+1000绿票", price: 13.5, features: ["暗战异变的奥普怀妮", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "41", name: "赤鬼伯伯", type: "single", description: "赤鬼伯伯+2000钻+1000绿票", price: 10, features: ["赤鬼伯伯", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "8", name: "光萝复制体吉尼兹", type: "single", description: "光萝复制体吉尼兹+2000钻+1000绿票", price: 13.9, features: ["光萝复制体吉尼兹", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "42", name: "崔西里亚", type: "random", description: "崔西里亚+随机五星+1000绿票", price: 13.5, features: ["崔西里亚", "随机五星", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "9", name: "光乃柏妮丝", type: "single", description: "光乃柏妮丝+2000钻+1000绿票", price: 16.3, features: ["光乃柏妮丝", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "43", name: "安泰西亚", type: "random", description: "安泰西亚+随机五星+800绿票", price: 7.5, features: ["安泰西亚", "随机五星", "800绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "10", name: "光法乔瑟琳", type: "single", description: "光法乔瑟琳+2000钻+1000绿票", price: 14.5, features: ["光法乔瑟琳", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "44", name: "碧海的诺可林", type: "random", description: "碧海的诺可林+随机五星+800绿票", price: 8.8, features: ["碧海的诺可林", "随机五星", "800绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "11", name: "光修女莱莎蔓德", type: "single", description: "光修女莱莎蔓德+2000钻+1000绿票", price: 10.9, features: ["光修女莱莎蔓德", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "45", name: "彩加", type: "random", description: "彩加+随机五星+800绿票", price: 9.9, features: ["彩加", "随机五星", "800绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "12", name: "暗拳菲利西娅", type: "single", description: "暗拳菲利西娅+2000钻+1000绿票", price: 16.3, features: ["暗拳菲利西娅", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "46", name: "杏仁", type: "random", description: "杏仁+随机五星+800绿票", price: 7.7, features: ["杏仁", "随机五星", "800绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "13", name: "光宝马守护者艾瑞儿", type: "single", description: "光宝马守护者艾瑞儿+2000钻+1000绿票", price: 29.9, features: ["光宝马守护者艾瑞儿", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "47", name: "新春的米娜", type: "random", description: "新春的米娜+随机五星+1000绿票", price: 16.6, features: ["新春的米娜", "随机五星", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "14", name: "暗飞剑欧贝恩丝", type: "single", description: "暗飞剑欧贝恩丝+2000钻+1000绿票", price: 29.9, features: ["暗飞剑欧贝恩丝", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "48", name: "水琴乌尔德", type: "random", description: "水琴乌尔德+随机五星+800绿票", price: 9.9, features: ["水琴乌尔德", "随机五星", "800绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "15", name: "奥丽芙", type: "random", description: "奥丽芙+随机五星+2000钻+1000绿票", price: 10.9, features: ["奥丽芙", "随机五星", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写"] },
+			{ id: "49", name: "猫祭", type: "single", description: "猫祭+2000钻+1000绿票", price: 16.8, features: ["猫祭", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "16", name: "暗龙绝望的夏妮", type: "single", description: "暗龙绝望的夏妮+2000钻+1000绿票", price: 15.9, features: ["暗龙绝望的夏妮", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "17", name: "光明女神珑连", type: "single", description: "光明女神珑连+2000钻+1000绿票", price: 23.3, features: ["光明女神珑连", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "18", name: "盖儿", type: "single", description: "盖儿+2000钻+1000绿票", price: 19.9, features: ["盖儿", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			  { id: "19", name: "奥柏丝蒂恩", type: "single", description: "奥柏丝蒂恩+2000钻+1000绿票", price: 23, features: ["奥柏丝蒂恩", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "20", name: "璀璨的衣蛾丝", type: "single", description: "璀璨的衣蛾丝+2000钻+1000绿票", price: 39.9, features: ["璀璨的衣蛾丝", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "21", name: "天宫关夜", type: "single", description: "天宫关夜+2000钻+1000绿票", price: 35.5, features: ["天宫关夜", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "22", name: "蝶子", type: "single", description: "蝶子+2000钻+1000绿票", price: 36.6, features: ["蝶子", "2000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] },
+			{ id: "23", name: "彼岸花茱莉亚", type: "single", description: "彼岸花茱莉亚+3000钻+1000绿票", price: 39.9, features: ["彼岸花茱莉亚", "3000钻石", "1000绿票", "剧情3-1", "邀请码未填写", "筛选未动"] }
+		];
+
+		// 购物车数据
+		let cart = JSON.parse(localStorage.getItem('cart')) || [];
+		
+		// 买家信息
+		let buyerInfo = JSON.parse(localStorage.getItem('buyerInfo')) || {
+			name: '',
+			qq: '',
+			phone: '',
+			note: ''
+		};
+		
+		// 初始化页面
+		document.addEventListener('DOMContentLoaded', function() {
+			renderProducts();
+			updateCartDisplay();
+			loadBuyerInfo();
+			
+			// 筛选按钮事件
+			document.querySelectorAll('.filter-btn').forEach(button => {
+				button.addEventListener('click', function() {
+					if (this.id === 'priceFilterBtn' || this.id === 'resetFilterBtn') return;
+					
+					document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+					this.classList.add('active');
+					
+					const filter = this.getAttribute('data-filter');
+					renderProducts(filter);
+				});
+			});
+			
+			// 价格筛选
+			document.getElementById('priceFilterBtn').addEventListener('click', function() {
+				const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+				const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+				
+				renderProductsByPrice(minPrice, maxPrice);
+			});
+			
+			// 重置筛选
+			document.getElementById('resetFilterBtn').addEventListener('click', function() {
+				document.getElementById('minPrice').value = '';
+				document.getElementById('maxPrice').value = '';
+				document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+				document.querySelector('[data-filter="all"]').classList.add('active');
+				renderProducts();
+			});
+			
+			// 购物车图标点击事件
+			document.getElementById('cartIcon').addEventListener('click', function() {
+				document.getElementById('cartSidebar').classList.add('active');
+			});
+			
+			// 关闭购物车
+			document.getElementById('closeCart').addEventListener('click', function() {
+				document.getElementById('cartSidebar').classList.remove('active');
+			});
+			
+			// 结账按钮
+			document.getElementById('checkoutBtn').addEventListener('click', function() {
+				if (cart.length === 0) {
+					alert('购物车为空，请先添加商品！');
+					return;
+				}
+				
+				// 显示买家信息表单
+				const buyerForm = document.getElementById('buyerForm');
+				if (buyerForm.style.display === 'none' || buyerForm.style.display === '') {
+					buyerForm.style.display = 'block';
+					this.innerHTML = '<i class="fas fa-check"></i> 确认提交订单';
+				} else {
+					// 验证买家信息
+					if (!validateBuyerInfo()) {
+						return;
+					}
+					
+					// 保存买家信息
+					saveBuyerInfo();
+					
+					// 显示订单确认模态框
+					showOrderModal();
+				}
+			});
+			
+			// 关闭模态框
+			document.getElementById('closeModal').addEventListener('click', function() {
+				document.getElementById('orderModal').classList.remove('active');
+			});
+			
+			document.getElementById('closeModalBtn').addEventListener('click', function() {
+				document.getElementById('orderModal').classList.remove('active');
+			});
+			
+			// 复制订单信息
+			document.getElementById('copyOrderBtn').addEventListener('click', function() {
+				copyOrderToClipboard();
+			});
+			
+			// 保存买家信息到localStorage
+			document.getElementById('buyerName').addEventListener('input', saveBuyerInfo);
+			document.getElementById('buyerQQ').addEventListener('input', saveBuyerInfo);
+			document.getElementById('buyerPhone').addEventListener('input', saveBuyerInfo);
+			document.getElementById('buyerNote').addEventListener('input', saveBuyerInfo);
+		});
+		
+		// 渲染商品
+		function renderProducts(filter = 'all') {
+			const container = document.getElementById('productsContainer');
+			container.innerHTML = '';
+			
+			let filteredProducts = products;
+			
+			if (filter !== 'all') {
+				if (filter === 'single') {
+					filteredProducts = products.filter(product => product.type === 'single');
+				} else if (filter === 'multiple') {
+					filteredProducts = products.filter(product => product.type === 'multiple');
+				} else if (filter === 'random') {
+					filteredProducts = products.filter(product => product.type === 'random');
+				} else if (filter === 'under10') {
+					filteredProducts = products.filter(product => product.price < 10);
+				} else if (filter === '10-20') {
+					filteredProducts = products.filter(product => product.price >= 10 && product.price <= 20);
+				} else if (filter === 'over20') {
+					filteredProducts = products.filter(product => product.price > 20);
+				}
+			}
+			
+			filteredProducts.forEach(product => {
+				const card = document.createElement('div');
+				card.className = 'product-card';
+				card.dataset.id = product.id;
+				card.dataset.type = product.type;
+				card.dataset.price = product.price;
+				
+				// 检查是否在购物车中
+				const inCart = cart.some(item => item.id === product.id);
+				
+				card.innerHTML = `
+					<div class="card-header">
+						<h3>${product.name} <span class="product-id">商品${product.id}</span></h3>
+					</div>
+					<div class="card-body">
+						<ul class="product-features">
+							${product.features.map(feature => `<li><span class="feature-icon"><i class="fas fa-check"></i></span> ${feature}</li>`).join('')}
+						</ul>
+						<div class="product-description">
+							${product.description}
+						</div>
+					</div>
+					<div class="card-footer">
+						<div class="price">${product.price.toFixed(2)} 元</div>
+						<button class="buy-btn ${inCart ? 'in-cart' : ''}" onclick="addToCart('${product.id}')">
+							<i class="fas ${inCart ? 'fa-check-circle' : 'fa-cart-plus'}"></i> ${inCart ? '已在购物车' : '加入购物车'}
+						</button>
+					</div>
+				`;
+				
+				if (inCart) {
+					card.classList.add('highlight');
+				}
+				
+				container.appendChild(card);
+			});
+		}
+		
+		// 按价格筛选商品
+		function renderProductsByPrice(minPrice, maxPrice) {
+			const container = document.getElementById('productsContainer');
+			container.innerHTML = '';
+			
+			const filteredProducts = products.filter(product => 
+				product.price >= minPrice && product.price <= maxPrice
+			);
+			
+			filteredProducts.forEach(product => {
+				const card = document.createElement('div');
+				card.className = 'product-card';
+				card.dataset.id = product.id;
+				card.dataset.type = product.type;
+				card.dataset.price = product.price;
+				
+				// 检查是否在购物车中
+				const inCart = cart.some(item => item.id === product.id);
+				
+				card.innerHTML = `
+					<div class="card-header">
+						<h3>${product.name} <span class="product-id">商品${product.id}</span></h3>
+					</div>
+					<div class="card-body">
+						<ul class="product-features">
+							${product.features.map(feature => `<li><span class="feature-icon"><i class="fas fa-check"></i></span> ${feature}</li>`).join('')}
+						</ul>
+						<div class="product-description">
+							${product.description}
+						</div>
+					</div>
+					<div class="card-footer">
+						<div class="price">${product.price.toFixed(2)} 元</div>
+						<button class="buy-btn ${inCart ? 'in-cart' : ''}" onclick="addToCart('${product.id}')">
+							<i class="fas ${inCart ? 'fa-check-circle' : 'fa-cart-plus'}"></i> ${inCart ? '已在购物车' : '加入购物车'}
+						</button>
+					</div>
+				`;
+				
+				if (inCart) {
+					card.classList.add('highlight');
+				}
+				
+				container.appendChild(card);
+			});
+		}
+		
+		// 添加到购物车
+		window.addToCart = function(productId) {
+			const product = products.find(p => p.id === productId);
+			
+			// 检查是否已经在购物车中
+			if (cart.some(item => item.id === productId)) {
+				if (confirm('该商品已在购物车中，是否从购物车移除？')) {
+					cart = cart.filter(item => item.id !== productId);
+					localStorage.setItem('cart', JSON.stringify(cart));
+					updateCartDisplay();
+					
+					// 获取当前筛选状态
+					const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
+					const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+					const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+					
+					if (minPrice > 0 || maxPrice < Infinity) {
+						renderProductsByPrice(minPrice, maxPrice);
+					} else {
+						renderProducts(activeFilter);
+					}
+				}
+				return;
+			}
+			
+			cart.push({
+				id: product.id,
+				name: product.name,
+				description: product.description,
+				price: product.price,
+				type: product.type
+			});
+			
+			localStorage.setItem('cart', JSON.stringify(cart));
+			updateCartDisplay();
+			
+			// 获取当前筛选状态
+			const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
+			const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+			const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+			
+			if (minPrice > 0 || maxPrice < Infinity) {
+				renderProductsByPrice(minPrice, maxPrice);
+			} else {
+				renderProducts(activeFilter);
+			}
+			
+			// 显示添加成功动画
+			const cartIcon = document.getElementById('cartIcon');
+			cartIcon.style.transform = 'scale(1.3) rotate(15deg)';
+			setTimeout(() => {
+				cartIcon.style.transform = 'scale(1) rotate(0deg)';
+			}, 300);
+		};
+		
+		// 从购物车移除商品
+		window.removeFromCart = function(productId) {
+			cart = cart.filter(item => item.id !== productId);
+			localStorage.setItem('cart', JSON.stringify(cart));
+			updateCartDisplay();
+			
+			// 获取当前筛选状态
+			const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
+			const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+			const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+			
+			if (minPrice > 0 || maxPrice < Infinity) {
+				renderProductsByPrice(minPrice, maxPrice);
+			} else {
+				renderProducts(activeFilter);
+			}
+		};
+		
+		// 更新购物车显示
+		function updateCartDisplay() {
+			const cartItemsContainer = document.getElementById('cartItems');
+			const cartCount = document.getElementById('cartCount');
+			const cartTotal = document.getElementById('cartTotal');
+			const emptyCart = document.getElementById('emptyCart');
+			
+			// 更新购物车数量
+			cartCount.textContent = cart.length;
+			
+			// 更新总计
+			cartTotal.textContent = calculateCartTotal().toFixed(2);
+			
+			// 更新购物车内容
+			if (cart.length === 0) {
+				emptyCart.style.display = 'block';
+				cartItemsContainer.innerHTML = '';
+				cartItemsContainer.appendChild(emptyCart);
+				document.getElementById('buyerForm').style.display = 'none';
+				document.getElementById('checkoutBtn').innerHTML = '<i class="fas fa-credit-card"></i> 提交订单';
+			} else {
+				emptyCart.style.display = 'none';
+				let cartHTML = '';
+				
+				cart.forEach(item => {
+					cartHTML += `
+						<div class="cart-item">
+							<div class="cart-item-header">
+								<div class="cart-item-title">商品${item.id}: ${item.name}</div>
+								<button class="remove-item" onclick="removeFromCart('${item.id}')">
+									<i class="fas fa-trash"></i>
+								</button>
+							</div>
+							<p style="font-size: 14px; color: #aaa; margin-bottom: 8px;">${item.description}</p>
+							<div style="display: flex; justify-content: space-between;">
+								<span>价格:</span>
+								<span style="color: #ffdd59; font-weight: bold;">${item.price.toFixed(2)} 元</span>
+							</div>
+						</div>
+					`;
+				});
+				
+				cartItemsContainer.innerHTML = cartHTML;
+			}
+		}
+		
+		// 计算购物车总计
+		function calculateCartTotal() {
+			return cart.reduce((total, item) => total + item.price, 0);
+		}
+		
+		// 加载买家信息
+		function loadBuyerInfo() {
+			document.getElementById('buyerName').value = buyerInfo.name || '';
+			document.getElementById('buyerQQ').value = buyerInfo.qq || '';
+			document.getElementById('buyerPhone').value = buyerInfo.phone || '';
+			document.getElementById('buyerNote').value = buyerInfo.note || '';
+		}
+		
+		// 保存买家信息
+		function saveBuyerInfo() {
+			buyerInfo = {
+				name: document.getElementById('buyerName').value,
+				qq: document.getElementById('buyerQQ').value,
+				phone: document.getElementById('buyerPhone').value,
+				note: document.getElementById('buyerNote').value
+			};
+			
+			localStorage.setItem('buyerInfo', JSON.stringify(buyerInfo));
+		}
+		
+		// 验证买家信息
+		function validateBuyerInfo() {
+			const name = document.getElementById('buyerName').value.trim();
+			const qq = document.getElementById('buyerQQ').value.trim();
+			const phone = document.getElementById('buyerPhone').value.trim();
+			
+			if (!name) {
+				alert('请输入收货人姓名！');
+				document.getElementById('buyerName').focus();
+				return false;
+			}
+			
+			if (!qq) {
+				alert('请输入QQ号码！');
+				document.getElementById('buyerQQ').focus();
+				return false;
+			}
+			
+			if (!/^\d{5,12}$/.test(qq)) {
+				alert('请输入有效的QQ号码（5-12位数字）！');
+				document.getElementById('buyerQQ').focus();
+				return false;
+			}
+			
+			if (phone && !/^1[3-9]\d{9}$/.test(phone)) {
+				alert('请输入有效的手机号码！');
+				document.getElementById('buyerPhone').focus();
+				return false;
+			}
+			
+			return true;
+		}
+		
+		// 显示订单确认模态框
+		function showOrderModal() {
+			const modal = document.getElementById('orderModal');
+			const orderSummary = document.getElementById('orderSummary');
+			const modalTotal = document.getElementById('modalTotal');
+			
+			// 生成订单摘要
+			let summaryHTML = `
+				<div style="margin-bottom: 15px;">
+					<h3 style="color: #ff758c; margin-bottom: 10px;">订单信息</h3>
+					<p><strong>订单号：</strong>XD${Date.now().toString().slice(-8)}</p>
+					<p><strong>下单时间：</strong>${new Date().toLocaleString()}</p>
+				</div>
+				
+				<div style="margin-bottom: 15px;">
+					<h3 style="color: #ff758c; margin-bottom: 10px;">买家信息</h3>
+					<p><strong>收货人：</strong>${buyerInfo.name}</p>
+					<p><strong>QQ号码：</strong>${buyerInfo.qq}</p>
+					<p><strong>手机号码：</strong>${buyerInfo.phone || '未提供'}</p>
+					<p><strong>备注：</strong>${buyerInfo.note || '无'}</p>
+				</div>
+				
+				<h3 style="color: #ff758c; margin-bottom: 15px;">商品清单</h3>
+			`;
+			
+			cart.forEach(item => {
+				summaryHTML += `
+					<div class="order-item">
+						<span>商品${item.id}: ${item.name}</span>
+						<span style="color: #ffdd59; font-weight: bold;">${item.price.toFixed(2)} 元</span>
+					</div>
+				`;
+			});
+			
+			orderSummary.innerHTML = summaryHTML;
+			modalTotal.textContent = calculateCartTotal().toFixed(2);
+			
+			// 显示模态框
+			modal.classList.add('active');
+		}
+		
+		// 复制订单信息到剪贴板
+		function copyOrderToClipboard() {
+			let orderText = "========= 星损自抽号订单 =========\n\n";
+			
+			// 订单信息
+			orderText += "【订单信息】\n";
+			orderText += `订单号：XD${Date.now().toString().slice(-8)}\n`;
+			orderText += `下单时间：${new Date().toLocaleString()}\n\n`;
+			
+			// 买家信息
+			orderText += "【买家信息】\n";
+			orderText += `收货人：${buyerInfo.name}\n`;
+			orderText += `QQ号码：${buyerInfo.qq}\n`;
+			orderText += `手机号码：${buyerInfo.phone || '未提供'}\n`;
+			orderText += `备注：${buyerInfo.note || '无'}\n\n`;
+			
+			// 商品清单
+			orderText += "【商品清单】\n";
+			cart.forEach(item => {
+				orderText += `商品${item.id}: ${item.name} - ${item.description} - ${item.price.toFixed(2)}元\n`;
+			});
+			
+			orderText += `\n订单总价：${calculateCartTotal().toFixed(2)}元\n\n`;
+			orderText += "========= 请将此信息发送给客服 =========\n";
+			orderText += "客服QQ: 12345678\n";
+			orderText += "24小时自动发货，下单后请耐心等待\n";
+			
+			// 复制到剪贴板
+			navigator.clipboard.writeText(orderText).then(() => {
+				alert('订单信息已复制到剪贴板！\n\n请将订单信息发送给客服完成购买。');
+				
+				// 清空购物车
+				cart = [];
+				localStorage.setItem('cart', JSON.stringify(cart));
+				updateCartDisplay();
+				document.getElementById('cartSidebar').classList.remove('active');
+				document.getElementById('orderModal').classList.remove('active');
+				
+				// 重置买家信息表单
+				document.getElementById('buyerForm').style.display = 'none';
+				document.getElementById('checkoutBtn').innerHTML = '<i class="fas fa-credit-card"></i> 提交订单';
+				
+				// 更新商品显示
+				const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
+				renderProducts(activeFilter);
+				
+				alert('订单已提交！客服将在收到订单后为您处理，24小时内自动发货。');
+			}).catch(err => {
+				alert('复制失败，请手动复制订单信息。');
+				console.error('复制失败: ', err);
+			});
+		}
+	</script>
+</body>
+</html>
+```
